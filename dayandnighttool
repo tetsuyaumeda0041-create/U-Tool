@@ -251,7 +251,7 @@
     <!-- 目標終了時刻（何時・何分 1分刻みプルダウン） -->
     <div class="form-group">
         <label>目標終了時刻</label>
-        <div class="hint" id="target-hint">終了させたい時刻を「何時」「何分（1分刻み）」で選択してください</div>
+        <div class="hint" id="target-hint">終了させたい時刻を「何時」「何分（1分刻み）」で選択してください（日勤初期値：15:00）</div>
         <div class="time-inputs">
             <select id="target_hour">
                 <option value="0">0時</option><option value="1">1時</option><option value="2">2時</option><option value="3">3時</option>
@@ -425,15 +425,16 @@
         }
     }
 
-    function initClock() {
+    function initApp() {
+        toggleShift();
         updateLiveClock();
         setInterval(updateLiveClock, 1000);
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initClock);
+        document.addEventListener('DOMContentLoaded', initApp);
     } else {
-        initClock();
+        initApp();
     }
 
     function toggleMode() {
