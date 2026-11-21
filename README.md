@@ -36,7 +36,20 @@
                 <option value="23">23時</option>
                 <option value="24">24時</option>
             </select>
-            <select id="now_min"></select>
+            <select id="now_min">
+                <option value="0">00分</option><option value="1">01分</option><option value="2">02分</option><option value="3">03分</option><option value="4">04分</option>
+                <option value="5">05分</option><option value="6">06分</option><option value="7">07分</option><option value="8">08分</option><option value="9">09分</option>
+                <option value="10">10分</option><option value="11">11分</option><option value="12">12分</option><option value="13">13分</option><option value="14">14分</option>
+                <option value="15">15分</option><option value="16">16分</option><option value="17">17分</option><option value="18">18分</option><option value="19">19分</option>
+                <option value="20">20分</option><option value="21">21分</option><option value="22">22分</option><option value="23">23分</option><option value="24">24分</option>
+                <option value="25">25分</option><option value="26">26分</option><option value="27">27分</option><option value="28">28分</option><option value="29">29分</option>
+                <option value="30" selected>30分</option><option value="31">31分</option><option value="32">32分</option><option value="33">33分</option><option value="34">34分</option>
+                <option value="35">35分</option><option value="36">36分</option><option value="37">37分</option><option value="38">38分</option><option value="39">39分</option>
+                <option value="40">40分</option><option value="41">41分</option><option value="42">42分</option><option value="43">43分</option><option value="44">44分</option>
+                <option value="45">45分</option><option value="46">46分</option><option value="47">47分</option><option value="48">48分</option><option value="49">49分</option>
+                <option value="50">50分</option><option value="51">51分</option><option value="52">52分</option><option value="53">53分</option><option value="54">54分</option>
+                <option value="55">55分</option><option value="56">56分</option><option value="57">57分</option><option value="58">58分</option><option value="59">59分</option>
+            </select>
         </div>
     </div>
 
@@ -103,7 +116,20 @@
                 <option value="5">5時間</option>
                 <option value="6">6時間</option>
             </select>
-            <select id="before_min"></select>
+            <select id="before_min">
+                <option value="0" selected>00分</option><option value="1">01分</option><option value="2">02分</option><option value="3">03分</option><option value="4">04分</option>
+                <option value="5">05分</option><option value="6">06分</option><option value="7">07分</option><option value="8">08分</option><option value="9">09分</option>
+                <option value="10">10分</option><option value="11">11分</option><option value="12">12分</option><option value="13">13分</option><option value="14">14分</option>
+                <option value="15">15分</option><option value="16">16分</option><option value="17">17分</option><option value="18">18分</option><option value="19">19分</option>
+                <option value="20">20分</option><option value="21">21分</option><option value="22">22分</option><option value="23">23分</option><option value="24">24分</option>
+                <option value="25">25分</option><option value="26">26分</option><option value="27">27分</option><option value="28">28分</option><option value="29">29分</option>
+                <option value="30">30分</option><option value="31">31分</option><option value="32">32分</option><option value="33">33分</option><option value="34">34分</option>
+                <option value="35">35分</option><option value="36">36分</option><option value="37">37分</option><option value="38">38分</option><option value="39">39分</option>
+                <option value="40">40分</option><option value="41">41分</option><option value="42">42分</option><option value="43">43分</option><option value="44">44分</option>
+                <option value="45">45分</option><option value="46">46分</option><option value="47">47分</option><option value="48">48分</option><option value="49">49分</option>
+                <option value="50">50分</option><option value="51">51分</option><option value="52">52分</option><option value="53">53分</option><option value="54">54分</option>
+                <option value="55">55分</option><option value="56">56分</option><option value="57">57分</option><option value="58">58分</option><option value="59">59分</option>
+            </select>
         </div>
     </div>
 
@@ -118,7 +144,20 @@
                 <option value="2">2時間</option>
                 <option value="3">3時間</option>
             </select>
-            <select id="after_min"></select>
+            <select id="after_min">
+                <option value="0">00分</option><option value="1">01分</option><option value="2">02分</option><option value="3">03分</option><option value="4">04分</option>
+                <option value="5">05分</option><option value="6">06分</option><option value="7">07分</option><option value="8">08分</option><option value="9">09分</option>
+                <option value="10">10分</option><option value="11">11分</option><option value="12">12分</option><option value="13">13分</option><option value="14">14分</option>
+                <option value="15">15分</option><option value="16">16分</option><option value="17">17分</option><option value="18">18分</option><option value="19">19分</option>
+                <option value="20">20分</option><option value="21">21分</option><option value="22">22分</option><option value="23">23分</option><option value="24">24分</option>
+                <option value="25">25分</option><option value="26">26分</option><option value="27">27分</option><option value="28">28分</option><option value="29">29分</option>
+                <option value="30" selected>30分</option><option value="31">31分</option><option value="32">32分</option><option value="33">33分</option><option value="34">34分</option>
+                <option value="35">35分</option><option value="36">36分</option><option value="37">37分</option><option value="38">38分</option><option value="39">39分</option>
+                <option value="40">40分</option><option value="41">41分</option><option value="42">42分</option><option value="43">43分</option><option value="44">44分</option>
+                <option value="45">45分</option><option value="46">46分</option><option value="47">47分</option><option value="48">48分</option><option value="49">49分</option>
+                <option value="50">50分</option><option value="51">51分</option><option value="52">52分</option><option value="53">53分</option><option value="54">54分</option>
+                <option value="55">55分</option><option value="56">56分</option><option value="57">57分</option><option value="58">58分</option><option value="59">59分</option>
+            </select>
         </div>
     </div>
 
@@ -149,13 +188,10 @@
 
 <script>
     // AM/PM に応じて「時」の選択肢を更新（AM: 1〜11、PM: 12〜24）
-    function updateNowHourOptions(preferredHour = null) {
-        const ampmEl = document.getElementById('ampm');
+    function updateNowHourOptions() {
+        const ampm = document.getElementById('ampm').value;
         const hourSelect = document.getElementById('now_hour');
-        if (!ampmEl || !hourSelect) return;
-
-        const ampm = ampmEl.value;
-        const currentVal = preferredHour !== null ? preferredHour : parseInt(hourSelect.value, 10);
+        const currentVal = parseInt(hourSelect.value, 10);
 
         const startHour = ampm === 'AM' ? 1 : 12;
         const endHour = ampm === 'AM' ? 11 : 24;
@@ -173,36 +209,6 @@
         } else {
             hourSelect.value = ampm === 'AM' ? 9 : 13;
         }
-    }
-
-    // 指定した select 要素に 0〜59 の1分刻みオプションを生成
-    function populateMinuteSelect(selectId, defaultMin = 0) {
-        const minSelect = document.getElementById(selectId);
-        if (!minSelect) return;
-
-        minSelect.innerHTML = '';
-        for (let m = 0; m <= 59; m++) {
-            const option = document.createElement('option');
-            option.value = m;
-            option.textContent = `${String(m).padStart(2, '0')}分`;
-            minSelect.appendChild(option);
-        }
-        minSelect.value = defaultMin;
-    }
-
-    // すべての1分刻みプルダウンを初期化
-    function initAllTimeSelects() {
-        updateNowHourOptions(13);
-        populateMinuteSelect('now_min', 30);
-        populateMinuteSelect('before_min', 0);
-        populateMinuteSelect('after_min', 30);
-    }
-
-    // DOM読み込み完了時と即時実行の両方で確実に初期化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initAllTimeSelects);
-    } else {
-        initAllTimeSelects();
     }
 
     function getCurrentMinutesFromAmPm() {
@@ -261,4 +267,55 @@
         let perPersonMin = 0;
 
         if (mode === 'route') {
-            const m = parseFloat(document.getElement
+            const m = parseFloat(document.getElementById('speed_min').value) || 0;
+            const s = parseFloat(document.getElementById('speed_sec').value) || 0;
+            const speedMinutes = m + (s / 60);
+
+            const routesPerHr = 60 / speedMinutes;
+            const proc1430 = (g1 + g2) * routesPerHr * tBefore;
+            const rem1430 = totalWork - proc1430;
+            const procG2 = g2 * routesPerHr * tAfter;
+            const remOtRoutes = Math.max(0, rem1430 - procG2);
+
+            const totalOtMin = remOtRoutes * speedMinutes;
+            totalOtHours = totalOtMin / 60;
+            if (g1 > 0) {
+                perPersonMin = (totalOtHours / g1) * 60;
+            }
+        } else {
+            const pph = parseFloat(document.getElementById('speed_pph').value) || 1;
+            const proc1430 = (g1 + g2) * pph * tBefore;
+            const rem1430 = totalWork - proc1430;
+            const procG2 = g2 * pph * tAfter;
+            const remForOt = Math.max(0, rem1430 - procG2);
+
+            totalOtHours = remForOt / pph;
+            if (g1 > 0) {
+                perPersonMin = (totalOtHours / g1) * 60;
+            }
+        }
+
+        document.getElementById('res_total_ot').innerText = totalOtHours.toFixed(2);
+        document.getElementById('res_per_person').innerText = perPersonMin.toFixed(1);
+
+        let adviceHtml = "";
+        if (perPersonMin <= 0) {
+            adviceHtml = "<strong>【判定：残業なし】</strong><br>定時内に余裕で完了できます！残業募集は不要です。";
+        } else if (perPersonMin <= 25) {
+            adviceHtml = "<strong>【判定：目標達成可能】</strong><br>①グループ全員に約 <strong>" + Math.ceil(perPersonMin) + "分</strong> 残ってもらえば目標時間に完了します（25分制限内OK）。";
+        } else {
+            adviceHtml = "<strong>⚠️【警告：制限時間超過】</strong><br>必要な残業時間が25分を超えています！人数を増やすか、完了時間の見直しが必要です。";
+        }
+        document.getElementById('res_advice').innerHTML = adviceHtml;
+
+        document.getElementById('screen-input').classList.remove('active');
+        document.getElementById('screen-result').classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function backToInput() {
+        document.getElementById('screen-result').classList.remove('active');
+        document.getElementById('screen-input').classList.add('active');
+        window.scrollTo(0, 0);
+    }
+</script>
