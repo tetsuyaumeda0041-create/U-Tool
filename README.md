@@ -24,20 +24,91 @@
         font-weight: normal;
         color: #555;
     }
+    .countdown-card {
+        background: #f3e5f5;
+        border: 1px solid #ce93d8;
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 14px;
+    }
+    .countdown-title {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #6a1b9a;
+        margin-bottom: 4px;
+    }
+    .countdown-value {
+        font-size: 1.45rem;
+        font-weight: bold;
+        color: #4a148c;
+    }
+    .mode-extra-card {
+        background: #fff8e1;
+        border: 1px solid #ffe082;
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 14px;
+    }
+    .mode-extra-title {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #e65100;
+        margin-bottom: 6px;
+    }
+    .mode-extra-row {
+        font-size: 1.05rem;
+        margin-bottom: 4px;
+        color: #333;
+    }
+    .mode-extra-highlight {
+        font-size: 1.45rem;
+        font-weight: bold;
+        color: #d84315;
+    }
 </style>
 
 <!-- ================= 画面1：入力画面 ================= -->
 <div id="screen-input" class="screen active">
     <h2>現場残業・ルート計算ツール</h2>
 
-    <!-- 現在時刻（リアルタイム表示のみ・プルダウンなし） -->
+    <!-- 現在時刻（リアルタイム表示） -->
     <div class="form-group">
         <label>現在時刻（端末の時計と連動）</label>
         <div class="now-clock-box">
             <span id="live_now_time">--:--:--</span>
             <span class="now-clock-sub" id="live_now_ampm">--</span>
         </div>
-        <div class="hint">※開いたときの現在時刻をもとに「定時までの残り時間」を自動反映します</div>
+        <div class="hint">※この現在時刻と下の「目標終了時刻」から残り時間を自動計算します</div>
+    </div>
+
+    <!-- 終了させたい目標時刻（プルダウン・1分刻み） -->
+    <div class="form-group">
+        <label>終了させたい目標時刻</label>
+        <div class="hint">現在時刻からこの時刻までの残り時間（何時間何分何秒）を自動算出します</div>
+        <div class="time-inputs">
+            <select id="target_hour">
+                <option value="0">0時</option><option value="1">1時</option><option value="2">2時</option><option value="3">3時</option>
+                <option value="4">4時</option><option value="5">5時</option><option value="6">6時</option><option value="7">7時</option>
+                <option value="8">8時</option><option value="9">9時</option><option value="10">10時</option><option value="11">11時</option>
+                <option value="12">12時</option><option value="13">13時</option><option value="14">14時</option><option value="15" selected>15時</option>
+                <option value="16">16時</option><option value="17">17時</option><option value="18">18時</option><option value="19">19時</option>
+                <option value="20">20時</option><option value="21">21時</option><option value="22">22時</option><option value="23">23時</option>
+            </select>
+            <select id="target_min">
+                <option value="0" selected>00分</option><option value="1">01分</option><option value="2">02分</option><option value="3">03分</option><option value="4">04分</option>
+                <option value="5">05分</option><option value="6">06分</option><option value="7">07分</option><option value="8">08分</option><option value="9">09分</option>
+                <option value="10">10分</option><option value="11">11分</option><option value="12">12分</option><option value="13">13分</option><option value="14">14分</option>
+                <option value="15">15分</option><option value="16">16分</option><option value="17">17分</option><option value="18">18分</option><option value="19">19分</option>
+                <option value="20">20分</option><option value="21">21分</option><option value="22">22分</option><option value="23">23分</option><option value="24">24分</option>
+                <option value="25">25分</option><option value="26">26分</option><option value="27">27分</option><option value="28">28分</option><option value="29">29分</option>
+                <option value="30">30分</option><option value="31">31分</option><option value="32">32分</option><option value="33">33分</option><option value="34">34分</option>
+                <option value="35">35分</option><option value="36">36分</option><option value="37">37分</option><option value="38">38分</option><option value="39">39分</option>
+                <option value="40">40分</option><option value="41">41分</option><option value="42">42分</option><option value="43">43分</option><option value="44">44分</option>
+                <option value="45">45分</option><option value="46">46分</option><option value="47">47分</option><option value="48">48分</option><option value="49">49分</option>
+                <option value="50">50分</option><option value="51">51分</option><option value="52">52分</option><option value="53">53分</option><option value="54">54分</option>
+                <option value="55">55分</option><option value="56">56分</option><option value="57">57分</option><option value="58">58分</option><option value="59">59分</option>
+            </select>
+        </div>
     </div>
 
     <div class="form-group">
@@ -89,71 +160,6 @@
         <input type="number" id="g2_count" placeholder="例: 8" value="8">
     </div>
 
-    <!-- 定時までの残り時間（現在時刻から自動反映＋手動調整も可能） -->
-    <div class="form-group">
-        <label>定時までの残り時間（14:30基準・自動反映）</label>
-        <div class="hint">現在時刻から14:30までの残り時間が自動で入ります（手動変更も可）</div>
-        <div class="time-inputs">
-            <select id="before_hour">
-                <option value="0" selected>0時間</option>
-                <option value="1">1時間</option>
-                <option value="2">2時間</option>
-                <option value="3">3時間</option>
-                <option value="4">4時間</option>
-                <option value="5">5時間</option>
-                <option value="6">6時間</option>
-                <option value="7">7時間</option>
-                <option value="8">8時間</option>
-                <option value="9">9時間</option>
-                <option value="10">10時間</option>
-                <option value="11">11時間</option>
-                <option value="12">12時間</option>
-            </select>
-            <select id="before_min">
-                <option value="0" selected>00分</option><option value="1">01分</option><option value="2">02分</option><option value="3">03分</option><option value="4">04分</option>
-                <option value="5">05分</option><option value="6">06分</option><option value="7">07分</option><option value="8">08分</option><option value="9">09分</option>
-                <option value="10">10分</option><option value="11">11分</option><option value="12">12分</option><option value="13">13分</option><option value="14">14分</option>
-                <option value="15">15分</option><option value="16">16分</option><option value="17">17分</option><option value="18">18分</option><option value="19">19分</option>
-                <option value="20">20分</option><option value="21">21分</option><option value="22">22分</option><option value="23">23分</option><option value="24">24分</option>
-                <option value="25">25分</option><option value="26">26分</option><option value="27">27分</option><option value="28">28分</option><option value="29">29分</option>
-                <option value="30">30分</option><option value="31">31分</option><option value="32">32分</option><option value="33">33分</option><option value="34">34分</option>
-                <option value="35">35分</option><option value="36">36分</option><option value="37">37分</option><option value="38">38分</option><option value="39">39分</option>
-                <option value="40">40分</option><option value="41">41分</option><option value="42">42分</option><option value="43">43分</option><option value="44">44分</option>
-                <option value="45">45分</option><option value="46">46分</option><option value="47">47分</option><option value="48">48分</option><option value="49">49分</option>
-                <option value="50">50分</option><option value="51">51分</option><option value="52">52分</option><option value="53">53分</option><option value="54">54分</option>
-                <option value="55">55分</option><option value="56">56分</option><option value="57">57分</option><option value="58">58分</option><option value="59">59分</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- 目標までの超過時間（何時間・1分刻みプルダウン） -->
-    <div class="form-group">
-        <label>目標までの超過時間</label>
-        <div class="hint">例：14:30定時から15:00目標なら「0時間」「30分」</div>
-        <div class="time-inputs">
-            <select id="after_hour">
-                <option value="0" selected>0時間</option>
-                <option value="1">1時間</option>
-                <option value="2">2時間</option>
-                <option value="3">3時間</option>
-            </select>
-            <select id="after_min">
-                <option value="0">00分</option><option value="1">01分</option><option value="2">02分</option><option value="3">03分</option><option value="4">04分</option>
-                <option value="5">05分</option><option value="6">06分</option><option value="7">07分</option><option value="8">08分</option><option value="9">09分</option>
-                <option value="10">10分</option><option value="11">11分</option><option value="12">12分</option><option value="13">13分</option><option value="14">14分</option>
-                <option value="15">15分</option><option value="16">16分</option><option value="17">17分</option><option value="18">18分</option><option value="19">19分</option>
-                <option value="20">20分</option><option value="21">21分</option><option value="22">22分</option><option value="23">23分</option><option value="24">24分</option>
-                <option value="25">25分</option><option value="26">26分</option><option value="27">27分</option><option value="28">28分</option><option value="29">29分</option>
-                <option value="30" selected>30分</option><option value="31">31分</option><option value="32">32分</option><option value="33">33分</option><option value="34">34分</option>
-                <option value="35">35分</option><option value="36">36分</option><option value="37">37分</option><option value="38">38分</option><option value="39">39分</option>
-                <option value="40">40分</option><option value="41">41分</option><option value="42">42分</option><option value="43">43分</option><option value="44">44分</option>
-                <option value="45">45分</option><option value="46">46分</option><option value="47">47分</option><option value="48">48分</option><option value="49">49分</option>
-                <option value="50">50分</option><option value="51">51分</option><option value="52">52分</option><option value="53">53分</option><option value="54">54分</option>
-                <option value="55">55分</option><option value="56">56分</option><option value="57">57分</option><option value="58">58分</option><option value="59">59分</option>
-            </select>
-        </div>
-    </div>
-
     <button onclick="calculateAndSwitch()">計算する</button>
 </div>
 
@@ -161,6 +167,17 @@
 <!-- ================= 画面2：結果表示画面 ================= -->
 <div id="screen-result" class="screen">
     <h2>【計算結果】</h2>
+
+    <!-- 現在時刻から終了目標時刻までの残り時間 -->
+    <div class="countdown-card">
+        <div class="countdown-title">⏳ 終了目標時刻（<span id="res_target_clock">--:--</span>）までの残り時間</div>
+        <div class="countdown-value" id="res_remaining_hms">--時間 --分 --秒</div>
+    </div>
+
+    <!-- 計算モード別の専用表示エリア -->
+    <div class="mode-extra-card" id="res_mode_extra">
+        <!-- ルート数ベース or 物量ベース(PPH) に応じて自動切り替え -->
+    </div>
     
     <div class="result-card">
         <div class="result-title">📌 必要な総残業時間（延べ）</div>
@@ -180,27 +197,7 @@
 </div>
 
 <script>
-    // 14:30（870分）を基準とした残り時間を計算して before_hour / before_min に反映
-    function syncRemainingTimeTo1430() {
-        const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
-        const targetMinutes = 14 * 60 + 30; // 14:30
-        const diffMinutes = Math.max(0, targetMinutes - currentMinutes);
-
-        const hourSelect = document.getElementById('before_hour');
-        const minSelect = document.getElementById('before_min');
-
-        const remHours = Math.floor(diffMinutes / 60);
-        const remMins = diffMinutes % 60;
-
-        if (hourSelect) {
-            const maxHour = hourSelect.options.length - 1;
-            hourSelect.value = Math.min(remHours, maxHour);
-        }
-        if (minSelect) {
-            minSelect.value = remMins;
-        }
-    }
+    let activeTargetDate = null;
 
     // 端末の現在時刻を画面に表示（1秒ごとに更新）
     function updateLiveClock() {
@@ -216,18 +213,76 @@
         const ampmEl = document.getElementById('live_now_ampm');
         if (timeEl) timeEl.textContent = timeText;
         if (ampmEl) ampmEl.textContent = ampmText;
+
+        // 結果画面が表示されている場合は「残り何時間何分何秒」もリアルタイム更新
+        updateResultRemainingCountdown(now);
     }
 
-    function initClockAndRemaining() {
+    // 選択した終了目標時刻の Date オブジェクトを取得（現在時刻より前なら翌日扱い）
+    function getTargetEndDate(baseNow) {
+        const targetHour = parseInt(document.getElementById('target_hour').value, 10) || 0;
+        const targetMin = parseInt(document.getElementById('target_min').value, 10) || 0;
+
+        const target = new Date(
+            baseNow.getFullYear(),
+            baseNow.getMonth(),
+            baseNow.getDate(),
+            targetHour,
+            targetMin,
+            0,
+            0
+        );
+
+        if (target.getTime() <= baseNow.getTime()) {
+            target.setDate(target.getDate() + 1);
+        }
+        return target;
+    }
+
+    // 結果画面の「残り何時間何分何秒」表示を更新
+    function updateResultRemainingCountdown(now = new Date()) {
+        if (!activeTargetDate) return;
+        const resEl = document.getElementById('res_remaining_hms');
+        if (!resEl) return;
+
+        const diffMs = Math.max(0, activeTargetDate.getTime() - now.getTime());
+        const totalSec = Math.floor(diffMs / 1000);
+        const h = Math.floor(totalSec / 3600);
+        const m = Math.floor((totalSec % 3600) / 60);
+        const s = totalSec % 60;
+
+        resEl.textContent = `${h}時間 ${String(m).padStart(2, '0')}分 ${String(s).padStart(2, '0')}秒`;
+    }
+
+    // 2つの Date の間で、指定した時刻（例: 14:30）までに確保できる時間（h）を算出
+    function getHoursBeforeCutoff(startDate, endDate, cutoffHour, cutoffMin) {
+        if (endDate <= startDate) return 0;
+
+        const cutoff = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate(),
+            cutoffHour,
+            cutoffMin,
+            0,
+            0
+        );
+
+        if (startDate >= cutoff) return 0;
+        const effectiveEnd = endDate < cutoff ? endDate : cutoff;
+        return Math.max(0, (effectiveEnd.getTime() - startDate.getTime()) / 3600000);
+    }
+
+    // 初期化
+    function initClock() {
         updateLiveClock();
-        syncRemainingTimeTo1430();
         setInterval(updateLiveClock, 1000);
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initClockAndRemaining);
+        document.addEventListener('DOMContentLoaded', initClock);
     } else {
-        initClockAndRemaining();
+        initClock();
     }
 
     function toggleMode() {
@@ -253,7 +308,7 @@
         } else {
             totalLabel.innerText = "残りの総物量 (個)";
             speedGroup.innerHTML = `
-                <label id="speed-label">平均PPH (1人1時間の処理数)</label>
+                <label id="speed-label">現在の平均PPH (1人1時間の処理数)</label>
                 <div class="hint">※1時間あたりの処理個数を入力してください</div>
                 <input type="number" id="speed_pph" value="400">
             `;
@@ -262,27 +317,37 @@
     }
 
     function calculateAndSwitch() {
+        const now = new Date();
+        activeTargetDate = getTargetEndDate(now);
+
+        const targetHour = parseInt(document.getElementById('target_hour').value, 10) || 0;
+        const targetMin = parseInt(document.getElementById('target_min').value, 10) || 0;
+        document.getElementById('res_target_clock').textContent =
+            `${String(targetHour).padStart(2, '0')}:${String(targetMin).padStart(2, '0')}`;
+        updateResultRemainingCountdown(now);
+
         const mode = document.getElementById('mode').value;
         const totalWork = parseFloat(document.getElementById('total_work').value) || 0;
         const g1 = parseFloat(document.getElementById('g1_count').value) || 0;
         const g2 = parseFloat(document.getElementById('g2_count').value) || 0;
 
-        // 定時までの残り時間（時間・分）から時間（h）へ変換
-        const beforeHour = parseFloat(document.getElementById('before_hour').value) || 0;
-        const beforeMin = parseFloat(document.getElementById('before_min').value) || 0;
-        const tBefore = beforeHour + (beforeMin / 60);
+        // 現在時刻から目標時刻までの総時間（h）
+        const totalRemainingHours = Math.max(0.0001, (activeTargetDate.getTime() - now.getTime()) / 3600000);
 
-        // 目標までの超過時間（時間・分）から時間（h）へ変換
-        const afterHour = parseFloat(document.getElementById('after_hour').value) || 0;
-        const afterMin = parseFloat(document.getElementById('after_min').value) || 0;
-        const tAfter = afterHour + (afterMin / 60);
+        // ①グループ定時（14:30）までの稼働時間（h）と、14:30〜目標時刻までの超過時間（h）
+        const tBefore = getHoursBeforeCutoff(now, activeTargetDate, 14, 30);
+        const tAfter = Math.max(0, totalRemainingHours - tBefore);
+
+        // ②グループ（18:00退勤）が目標時刻までに稼働できる時間（h）
+        const g2WorkHours = getHoursBeforeCutoff(now, activeTargetDate, 18, 0);
 
         let totalOtHours = 0;
         let perPersonMin = 0;
+        let modeExtraHtml = "";
 
         if (mode === 'route') {
-            const m = parseFloat(document.getElementById('speed_min').value) || 0;
-            const s = parseFloat(document.getElementById('speed_sec').value) || 0;
+            const m = parseInt(document.getElementById('speed_min').value, 10) || 0;
+            const s = parseInt(document.getElementById('speed_sec').value, 10) || 0;
             const speedMinutes = m + (s / 60);
 
             const routesPerHr = 60 / speedMinutes;
@@ -296,6 +361,20 @@
             if (g1 > 0) {
                 perPersonMin = (totalOtHours / g1) * 60;
             }
+
+            // 目標時刻までに終わらせるために「さらに追加で何人増やす必要があるか」
+            // ①グループは定時＋最大25分（0.4167h）まで稼働できる前提で不足人時を算出
+            const g1MaxHours = Math.min(totalRemainingHours, tBefore + (25 / 60));
+            const currentCapacityRoutes = (g1 * g1MaxHours + g2 * g2WorkHours) * routesPerHr;
+            const shortageRoutes = Math.max(0, totalWork - currentCapacityRoutes);
+            const shortageHours = shortageRoutes / routesPerHr;
+            const additionalPeople = shortageHours > 0 ? Math.ceil(shortageHours / totalRemainingHours) : 0;
+
+            modeExtraHtml = `
+                <div class="mode-extra-title">🚚 ルート数ベース詳細</div>
+                <div class="mode-extra-row">⏱ 1ルートあたりの所要時間：<strong>${m}分 ${s}秒</strong></div>
+                <div class="mode-extra-row">➕ 追加で増やす必要人数：<span class="mode-extra-highlight">${additionalPeople} 人</span></div>
+            `;
         } else {
             const pph = parseFloat(document.getElementById('speed_pph').value) || 1;
             const proc1430 = (g1 + g2) * pph * tBefore;
@@ -307,18 +386,30 @@
             if (g1 > 0) {
                 perPersonMin = (totalOtHours / g1) * 60;
             }
+
+            // 目標時刻までに完了させるために必要な平均PPH（総物量 ÷ 延べ稼働人時）
+            const g1MaxHours = Math.min(totalRemainingHours, tBefore + (25 / 60));
+            const totalManHours = Math.max(0.01, (g1 * g1MaxHours) + (g2 * g2WorkHours));
+            const requiredPph = totalWork / totalManHours;
+
+            modeExtraHtml = `
+                <div class="mode-extra-title">📦 物量ベース（PPH）詳細</div>
+                <div class="mode-extra-row">🎯 必要な平均PPH：<span class="mode-extra-highlight">${Math.ceil(requiredPph)}</span> 個/h</div>
+                <div class="mode-extra-row" style="font-size: 0.9rem; color: #555;">（入力した現在の平均PPH：${pph} 個/h）</div>
+            `;
         }
 
+        document.getElementById('res_mode_extra').innerHTML = modeExtraHtml;
         document.getElementById('res_total_ot').innerText = totalOtHours.toFixed(2);
         document.getElementById('res_per_person').innerText = perPersonMin.toFixed(1);
 
         let adviceHtml = "";
         if (perPersonMin <= 0) {
-            adviceHtml = "<strong>【判定：残業なし】</strong><br>定時内に余裕で完了できます！残業募集は不要です。";
+            adviceHtml = "<strong>【判定：残業なし】</strong><br>目標時刻内に余裕で完了できます！残業募集は不要です。";
         } else if (perPersonMin <= 25) {
-            adviceHtml = "<strong>【判定：目標達成可能】</strong><br>①グループ全員に約 <strong>" + Math.ceil(perPersonMin) + "分</strong> 残ってもらえば目標時間に完了します（25分制限内OK）。";
+            adviceHtml = "<strong>【判定：目標達成可能】</strong><br>①グループ全員に約 <strong>" + Math.ceil(perPersonMin) + "分</strong> 残ってもらえば目標時刻に完了します（25分制限内OK）。";
         } else {
-            adviceHtml = "<strong>⚠️【警告：制限時間超過】</strong><br>必要な残業時間が25分を超えています！人数を増やすか、完了時間の見直しが必要です。";
+            adviceHtml = "<strong>⚠️【警告：制限時間超過】</strong><br>必要な残業時間が25分を超えています！人員追加やペースアップが必要です。";
         }
         document.getElementById('res_advice').innerHTML = adviceHtml;
 
@@ -328,9 +419,9 @@
     }
 
     function backToInput() {
+        activeTargetDate = null;
         document.getElementById('screen-result').classList.remove('active');
         document.getElementById('screen-input').classList.add('active');
-        syncRemainingTimeTo1430();
         window.scrollTo(0, 0);
     }
 </script>
