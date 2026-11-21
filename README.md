@@ -1,44 +1,28 @@
+<style>
+    .form-group {
+        border: 1px solid #222;
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 16px;
+        background-color: #ffffff;
+    }
+</style>
+
 <!-- ================= 画面1：入力画面 ================= -->
 <div id="screen-input" class="screen active">
     <h2>現場残業・ルート計算ツール</h2>
 
-    <!-- 現在時刻（AM / PM） -->
+    <!-- 現在時刻（AM / PM・1分刻み） -->
     <div class="form-group">
-        <label>現在時刻 (AM / PM)</label>
-        <div class="hint">例：午後1時30分なら「PM」「1時」「30分」を選択</div>
+        <label>現在時刻 (AM / PM・1分刻み)</label>
+        <div class="hint">AM：1:00〜11:59 ／ PM：12:00〜24:59（1分刻みで選択）</div>
         <div class="time-inputs">
-            <select id="ampm">
+            <select id="ampm" onchange="updateNowHourOptions()">
                 <option value="AM">AM</option>
                 <option value="PM" selected>PM</option>
             </select>
-            <select id="now_hour">
-                <option value="1" selected>1時</option>
-                <option value="2">2時</option>
-                <option value="3">3時</option>
-                <option value="4">4時</option>
-                <option value="5">5時</option>
-                <option value="6">6時</option>
-                <option value="7">7時</option>
-                <option value="8">8時</option>
-                <option value="9">9時</option>
-                <option value="10">10時</option>
-                <option value="11">11時</option>
-                <option value="12">12時</option>
-            </select>
-            <select id="now_min">
-                <option value="0">00分</option>
-                <option value="5">05分</option>
-                <option value="10">10分</option>
-                <option value="15">15分</option>
-                <option value="20">20分</option>
-                <option value="25">25分</option>
-                <option value="30" selected>30分</option>
-                <option value="35">35分</option>
-                <option value="40">40分</option>
-                <option value="45">45分</option>
-                <option value="50">50分</option>
-                <option value="55">55分</option>
-            </select>
+            <select id="now_hour"></select>
+            <select id="now_min"></select>
         </div>
     </div>
 
@@ -176,17 +160,53 @@
 </div>
 
 <script>
-    function getCurrentMinutesFromAmPm() {
+    // AM/PM に応じて「時」の選択肢を更新（AM: 1〜11、PM: 12〜24）
+    function updateNowHourOptions(preferredHour = null) {
         const ampm = document.getElementById('ampm').value;
-        let hour = parseInt(document.getElementById('now_hour').value, 10) || 12;
-        const minute = parseInt(document.getElementById('now_min').value, 10) || 0;
+        const hourSelect = document.getElementById('now_hour');
+        const currentVal = preferredHour !== null ? preferredHour : parseInt(hourSelect.value, 10);
 
-        if (ampm === 'AM') {
-            if (hour === 12) hour = 0;
-        } else {
-            if (hour !== 12) hour += 12;
+        const startHour = ampm === 'AM' ? 1 : 12;
+        const endHour = ampm === 'AM' ? 11 : 24;
+
+        hourSelect.innerHTML = '';
+        for (let h = startHour; h <= endHour; h++) {
+            const option = document.createElement('option');
+            option.value = h;
+            option.textContent = `${h}時`;
+            hourSelect.appendChild(option);
         }
 
+        if (currentVal >= startHour && currentVal <= endHour) {
+            hourSelect.value = currentVal;
+        } else {
+            hourSelect.value = ampm === 'AM' ? 9 : 13;
+        }
+    }
+
+    // 「分」の選択肢を 0〜59 の1分刻みで生成
+    function initNowMinuteOptions(defaultMin = 30) {
+        const minSelect = document.getElementById('now_min');
+        minSelect.innerHTML = '';
+        for (let m = 0; m <= 59; m++) {
+            const option = document.createElement('option');
+            option.value = m;
+            option.textContent = `${String(m).padStart(2, '0')}分`;
+            minSelect.appendChild(option);
+        }
+        minSelect.value = defaultMin;
+    }
+
+    // 初期化実行
+    updateNowHourOptions(13);
+    initNowMinuteOptions(30);
+
+    function getCurrentMinutesFromAmPm() {
+        const ampm = document.getElementById('ampm').value;
+        const hour = parseInt(document.getElementById('now_hour').value, 10) || 0;
+        const minute = parseInt(document.getElementById('now_min').value, 10) || 0;
+
+        // AMは1〜11時、PMは12〜24時として扱う
         return hour * 60 + minute;
     }
 
@@ -224,71 +244,4 @@
     function calculateAndSwitch() {
         const mode = document.getElementById('mode').value;
         const totalWork = parseFloat(document.getElementById('total_work').value) || 0;
-        const g1 = parseFloat(document.getElementById('g1_count').value) || 0;
-        const g2 = parseFloat(document.getElementById('g2_count').value) || 0;
-
-        // 何時間・何分プルダウンから時間（h）へ変換
-        const beforeHour = parseFloat(document.getElementById('before_hour').value) || 0;
-        const beforeMin = parseFloat(document.getElementById('before_min').value) || 0;
-        const tBefore = beforeHour + (beforeMin / 60);
-
-        const afterHour = parseFloat(document.getElementById('after_hour').value) || 0;
-        const afterMin = parseFloat(document.getElementById('after_min').value) || 0;
-        const tAfter = afterHour + (afterMin / 60);
-
-        let totalOtHours = 0;
-        let perPersonMin = 0;
-
-        if (mode === 'route') {
-            const m = parseFloat(document.getElementById('speed_min').value) || 0;
-            const s = parseFloat(document.getElementById('speed_sec').value) || 0;
-            const speedMinutes = m + (s / 60);
-
-            const routesPerHr = 60 / speedMinutes;
-            const proc1430 = (g1 + g2) * routesPerHr * tBefore;
-            const rem1430 = totalWork - proc1430;
-            const procG2 = g2 * routesPerHr * tAfter;
-            const remOtRoutes = Math.max(0, rem1430 - procG2);
-
-            const totalOtMin = remOtRoutes * speedMinutes;
-            totalOtHours = totalOtMin / 60;
-            if (g1 > 0) {
-                perPersonMin = (totalOtHours / g1) * 60;
-            }
-        } else {
-            const pph = parseFloat(document.getElementById('speed_pph').value) || 1;
-            const proc1430 = (g1 + g2) * pph * tBefore;
-            const rem1430 = totalWork - proc1430;
-            const procG2 = g2 * pph * tAfter;
-            const remForOt = Math.max(0, rem1430 - procG2);
-
-            totalOtHours = remForOt / pph;
-            if (g1 > 0) {
-                perPersonMin = (totalOtHours / g1) * 60;
-            }
-        }
-
-        document.getElementById('res_total_ot').innerText = totalOtHours.toFixed(2);
-        document.getElementById('res_per_person').innerText = perPersonMin.toFixed(1);
-
-        let adviceHtml = "";
-        if (perPersonMin <= 0) {
-            adviceHtml = "<strong>【判定：残業なし】</strong><br>定時内に余裕で完了できます！残業募集は不要です。";
-        } else if (perPersonMin <= 25) {
-            adviceHtml = "<strong>【判定：目標達成可能】</strong><br>①グループ全員に約 <strong>" + Math.ceil(perPersonMin) + "分</strong> 残ってもらえば目標時間に完了します（25分制限内OK）。";
-        } else {
-            adviceHtml = "<strong>⚠️【警告：制限時間超過】</strong><br>必要な残業時間が25分を超えています！人数を増やすか、完了時間の見直しが必要です。";
-        }
-        document.getElementById('res_advice').innerHTML = adviceHtml;
-
-        document.getElementById('screen-input').classList.remove('active');
-        document.getElementById('screen-result').classList.add('active');
-        window.scrollTo(0, 0);
-    }
-
-    function backToInput() {
-        document.getElementById('screen-result').classList.remove('active');
-        document.getElementById('screen-input').classList.add('active');
-        window.scrollTo(0, 0);
-    }
-</script>
+        const g1 = parseFloat(document.getElementById('g1_count').value)
