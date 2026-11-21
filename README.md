@@ -12,7 +12,7 @@
 <div id="screen-input" class="screen active">
     <h2>現場残業・ルート計算ツール</h2>
 
-    <!-- 現在時刻（AM / PM・1分刻み） -->
+    <!-- ① 現在時刻（AM / PM・1分刻み） -->
     <div class="form-group">
         <label>現在時刻 (AM / PM・1分刻み)</label>
         <div class="hint">AM：1:00〜11:59 ／ PM：12:00〜24:59（1分刻みで選択）</div>
@@ -21,7 +21,21 @@
                 <option value="AM">AM</option>
                 <option value="PM" selected>PM</option>
             </select>
-            <select id="now_hour"></select>
+            <select id="now_hour">
+                <option value="12">12時</option>
+                <option value="13" selected>13時</option>
+                <option value="14">14時</option>
+                <option value="15">15時</option>
+                <option value="16">16時</option>
+                <option value="17">17時</option>
+                <option value="18">18時</option>
+                <option value="19">19時</option>
+                <option value="20">20時</option>
+                <option value="21">21時</option>
+                <option value="22">22時</option>
+                <option value="23">23時</option>
+                <option value="24">24時</option>
+            </select>
             <select id="now_min"></select>
         </div>
     </div>
@@ -75,7 +89,7 @@
         <input type="number" id="g2_count" placeholder="例: 8" value="8">
     </div>
 
-    <!-- 定時までの残り時間（何時間・何分プルダウン） -->
+    <!-- ② 定時までの残り時間（何時間・1分刻みプルダウン） -->
     <div class="form-group">
         <label>定時までの残り時間</label>
         <div class="hint">例：13:30から14:30までなら「1時間」「00分」</div>
@@ -89,24 +103,11 @@
                 <option value="5">5時間</option>
                 <option value="6">6時間</option>
             </select>
-            <select id="before_min">
-                <option value="0" selected>00分</option>
-                <option value="5">05分</option>
-                <option value="10">10分</option>
-                <option value="15">15分</option>
-                <option value="20">20分</option>
-                <option value="25">25分</option>
-                <option value="30">30分</option>
-                <option value="35">35分</option>
-                <option value="40">40分</option>
-                <option value="45">45分</option>
-                <option value="50">50分</option>
-                <option value="55">55分</option>
-            </select>
+            <select id="before_min"></select>
         </div>
     </div>
 
-    <!-- 目標までの超過時間（何時間・何分プルダウン） -->
+    <!-- ③ 目標までの超過時間（何時間・1分刻みプルダウン） -->
     <div class="form-group">
         <label>目標までの超過時間</label>
         <div class="hint">例：14:30定時から15:00目標なら「0時間」「30分」</div>
@@ -117,20 +118,7 @@
                 <option value="2">2時間</option>
                 <option value="3">3時間</option>
             </select>
-            <select id="after_min">
-                <option value="0">00分</option>
-                <option value="5">05分</option>
-                <option value="10">10分</option>
-                <option value="15">15分</option>
-                <option value="20">20分</option>
-                <option value="25">25分</option>
-                <option value="30" selected>30分</option>
-                <option value="35">35分</option>
-                <option value="40">40分</option>
-                <option value="45">45分</option>
-                <option value="50">50分</option>
-                <option value="55">55分</option>
-            </select>
+            <select id="after_min"></select>
         </div>
     </div>
 
@@ -162,8 +150,11 @@
 <script>
     // AM/PM に応じて「時」の選択肢を更新（AM: 1〜11、PM: 12〜24）
     function updateNowHourOptions(preferredHour = null) {
-        const ampm = document.getElementById('ampm').value;
+        const ampmEl = document.getElementById('ampm');
         const hourSelect = document.getElementById('now_hour');
+        if (!ampmEl || !hourSelect) return;
+
+        const ampm = ampmEl.value;
         const currentVal = preferredHour !== null ? preferredHour : parseInt(hourSelect.value, 10);
 
         const startHour = ampm === 'AM' ? 1 : 12;
@@ -184,9 +175,11 @@
         }
     }
 
-    // 「分」の選択肢を 0〜59 の1分刻みで生成
-    function initNowMinuteOptions(defaultMin = 30) {
-        const minSelect = document.getElementById('now_min');
+    // 指定した select 要素に 0〜59 の1分刻みオプションを生成
+    function populateMinuteSelect(selectId, defaultMin = 0) {
+        const minSelect = document.getElementById(selectId);
+        if (!minSelect) return;
+
         minSelect.innerHTML = '';
         for (let m = 0; m <= 59; m++) {
             const option = document.createElement('option');
@@ -197,16 +190,24 @@
         minSelect.value = defaultMin;
     }
 
-    // 初期化実行
-    updateNowHourOptions(13);
-    initNowMinuteOptions(30);
+    // すべての1分刻みプルダウンを初期化
+    function initAllTimeSelects() {
+        updateNowHourOptions(13);
+        populateMinuteSelect('now_min', 30);
+        populateMinuteSelect('before_min', 0);
+        populateMinuteSelect('after_min', 30);
+    }
+
+    // DOM読み込み完了時と即時実行の両方で確実に初期化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAllTimeSelects);
+    } else {
+        initAllTimeSelects();
+    }
 
     function getCurrentMinutesFromAmPm() {
-        const ampm = document.getElementById('ampm').value;
         const hour = parseInt(document.getElementById('now_hour').value, 10) || 0;
         const minute = parseInt(document.getElementById('now_min').value, 10) || 0;
-
-        // AMは1〜11時、PMは12〜24時として扱う
         return hour * 60 + minute;
     }
 
@@ -244,4 +245,20 @@
     function calculateAndSwitch() {
         const mode = document.getElementById('mode').value;
         const totalWork = parseFloat(document.getElementById('total_work').value) || 0;
-        const g1 = parseFloat(document.getElementById('g1_count').value)
+        const g1 = parseFloat(document.getElementById('g1_count').value) || 0;
+        const g2 = parseFloat(document.getElementById('g2_count').value) || 0;
+
+        // 何時間・何分（1分刻み）プルダウンから時間（h）へ変換
+        const beforeHour = parseFloat(document.getElementById('before_hour').value) || 0;
+        const beforeMin = parseFloat(document.getElementById('before_min').value) || 0;
+        const tBefore = beforeHour + (beforeMin / 60);
+
+        const afterHour = parseFloat(document.getElementById('after_hour').value) || 0;
+        const afterMin = parseFloat(document.getElementById('after_min').value) || 0;
+        const tAfter = afterHour + (afterMin / 60);
+
+        let totalOtHours = 0;
+        let perPersonMin = 0;
+
+        if (mode === 'route') {
+            const m = parseFloat(document.getElement
