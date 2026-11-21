@@ -1,231 +1,204 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>倉庫残業・ルート計算ツール</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f7f9fa;
-            color: #333;
-            margin: 0;
-            padding: 16px;
-        }
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        h2 {
-            font-size: 18px;
-            color: #00b900;
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 14px;
-        }
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 4px;
-            color: #555;
-        }
-        .hint {
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 6px;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            background-color: #fff;
-        }
-        /* 分・秒を横並びにするスタイル */
-        .time-inputs {
-            display: flex;
-            gap: 8px;
-        }
-        .time-inputs select {
-            flex: 1;
-        }
-        button {
-            width: 100%;
-            background-color: #00b900;
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:active {
-            background-color: #009900;
-        }
-        .secondary-btn {
-            background-color: #78909c;
-            margin-top: 10px;
-        }
-        .secondary-btn:active {
-            background-color: #607d8b;
-        }
-        .screen {
-            display: none;
-        }
-        .screen.active {
-            display: block;
-        }
-        .result-card {
-            background: #eef9ee;
-            border: 1px solid #c8e6c9;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-        .result-title {
-            font-size: 14px;
-            color: #2e7d32;
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
-        .result-value {
-            font-size: 26px;
-            font-weight: bold;
-            color: #d32f2f;
-        }
-        .advice-box {
-            background: #fff3e0;
-            border: 1px solid #ffe0b2;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #e65100;
-            margin-bottom: 16px;
-        }
-    </style>
-</head>
-<body>
+<!-- ================= 画面1：入力画面 ================= -->
+<div id="screen-input" class="screen active">
+    <h2>現場残業・ルート計算ツール</h2>
 
-<div class="container">
-
-    <!-- ================= 画面1：入力画面 ================= -->
-    <div id="screen-input" class="screen active">
-        <h2>現場残業・ルート計算ツール</h2>
-        
-        <div class="form-group">
-            <label>計算モード</label>
-            <select id="mode" onchange="toggleMode()">
-                <option value="route">ルート数ベース (分・秒指定)</option>
-                <option value="item">物量ベース (PPH)</option>
+    <!-- 現在時刻（AM / PM） -->
+    <div class="form-group">
+        <label>現在時刻 (AM / PM)</label>
+        <div class="hint">例：午後1時30分なら「PM」「1時」「30分」を選択</div>
+        <div class="time-inputs">
+            <select id="ampm">
+                <option value="AM">AM</option>
+                <option value="PM" selected>PM</option>
+            </select>
+            <select id="now_hour">
+                <option value="1" selected>1時</option>
+                <option value="2">2時</option>
+                <option value="3">3時</option>
+                <option value="4">4時</option>
+                <option value="5">5時</option>
+                <option value="6">6時</option>
+                <option value="7">7時</option>
+                <option value="8">8時</option>
+                <option value="9">9時</option>
+                <option value="10">10時</option>
+                <option value="11">11時</option>
+                <option value="12">12時</option>
+            </select>
+            <select id="now_min">
+                <option value="0">00分</option>
+                <option value="5">05分</option>
+                <option value="10">10分</option>
+                <option value="15">15分</option>
+                <option value="20">20分</option>
+                <option value="25">25分</option>
+                <option value="30" selected>30分</option>
+                <option value="35">35分</option>
+                <option value="40">40分</option>
+                <option value="45">45分</option>
+                <option value="50">50分</option>
+                <option value="55">55分</option>
             </select>
         </div>
-
-        <div class="form-group">
-            <label id="total-label">残りの総ルート数</label>
-            <input type="number" id="total_work" placeholder="例: 390" value="390">
-        </div>
-
-        <!-- 1ルートあたりの所要時間（分・秒選択式に改良） -->
-        <div class="form-group" id="speed-group">
-            <label id="speed-label">1ルートあたりの所要時間</label>
-            <div class="hint">例：5分15秒なら「5分」と「15秒」を選択します</div>
-            <div class="time-inputs">
-                <select id="speed_min">
-                    <option value="1">1分</option>
-                    <option value="2">2分</option>
-                    <option value="3">3分</option>
-                    <option value="4" selected>4分</option>
-                    <option value="5">5分</option>
-                    <option value="6">6分</option>
-                    <option value="7">7分</option>
-                    <option value="8">8分</option>
-                    <option value="9">9分</option>
-                    <option value="10">10分</option>
-                </select>
-                <select id="speed_sec">
-                    <option value="0" selected>0秒 (.0)</option>
-                    <option value="15">15秒 (.25)</option>
-                    <option value="30">30秒 (.5)</option>
-                    <option value="45">45秒 (.75)</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>①グループ人数 (14:30退勤)</label>
-            <input type="number" id="g1_count" placeholder="例: 12" value="12">
-        </div>
-
-        <div class="form-group">
-            <label>②グループ人数 (18:00退勤)</label>
-            <input type="number" id="g2_count" placeholder="例: 8" value="8">
-        </div>
-
-        <div class="form-group">
-            <label>定時までの残り時間 (h) [例: 13:30なら 1.0]</label>
-            <input type="number" step="0.1" id="time_before" value="1.0">
-        </div>
-
-        <div class="form-group">
-            <label>目標までの超過時間 (h) [例: 15:00なら 0.5]</label>
-            <input type="number" step="0.1" id="time_after" value="0.5">
-        </div>
-
-        <button onclick="calculateAndSwitch()">計算する</button>
     </div>
 
-
-    <!-- ================= 画面2：結果表示画面 ================= -->
-    <div id="screen-result" class="screen">
-        <h2>【計算結果】</h2>
-        
-        <div class="result-card">
-            <div class="result-title">📌 必要な総残業時間（延べ）</div>
-            <div><span id="res_total_ot" class="result-value">--</span> 時間</div>
-        </div>
-
-        <div class="result-card" style="background: #e3f2fd; border-color: #bbdefb;">
-            <div class="result-title" style="color: #1565c0;">👤 ①グループ 1人あたりの残業</div>
-            <div><span id="res_per_person" class="result-value" style="color: #0277bd;">--</span> 分</div>
-        </div>
-
-        <div class="advice-box" id="res_advice">
-            <!-- 判定メッセージ -->
-        </div>
-
-        <button class="secondary-btn" onclick="backToInput()">← 入力画面に戻る・修正する</button>
+    <div class="form-group">
+        <label>計算モード</label>
+        <select id="mode" onchange="toggleMode()">
+            <option value="route">ルート数ベース (分・秒指定)</option>
+            <option value="item">物量ベース (PPH)</option>
+        </select>
     </div>
 
+    <div class="form-group">
+        <label id="total-label">残りの総ルート数</label>
+        <input type="number" id="total_work" placeholder="例: 390" value="390">
+    </div>
+
+    <!-- 1ルートあたりの所要時間（分・秒選択式） -->
+    <div class="form-group" id="speed-group">
+        <label id="speed-label">1ルートあたりの所要時間</label>
+        <div class="hint">例：5分15秒なら「5分」と「15秒」を選択します</div>
+        <div class="time-inputs">
+            <select id="speed_min">
+                <option value="1">1分</option>
+                <option value="2">2分</option>
+                <option value="3">3分</option>
+                <option value="4" selected>4分</option>
+                <option value="5">5分</option>
+                <option value="6">6分</option>
+                <option value="7">7分</option>
+                <option value="8">8分</option>
+                <option value="9">9分</option>
+                <option value="10">10分</option>
+            </select>
+            <select id="speed_sec">
+                <option value="0" selected>0秒 (.0)</option>
+                <option value="15">15秒 (.25)</option>
+                <option value="30">30秒 (.5)</option>
+                <option value="45">45秒 (.75)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>①グループ人数 (14:30退勤)</label>
+        <input type="number" id="g1_count" placeholder="例: 12" value="12">
+    </div>
+
+    <div class="form-group">
+        <label>②グループ人数 (18:00退勤)</label>
+        <input type="number" id="g2_count" placeholder="例: 8" value="8">
+    </div>
+
+    <!-- 定時までの残り時間（何時間・何分プルダウン） -->
+    <div class="form-group">
+        <label>定時までの残り時間</label>
+        <div class="hint">例：13:30から14:30までなら「1時間」「00分」</div>
+        <div class="time-inputs">
+            <select id="before_hour">
+                <option value="0">0時間</option>
+                <option value="1" selected>1時間</option>
+                <option value="2">2時間</option>
+                <option value="3">3時間</option>
+                <option value="4">4時間</option>
+                <option value="5">5時間</option>
+                <option value="6">6時間</option>
+            </select>
+            <select id="before_min">
+                <option value="0" selected>00分</option>
+                <option value="5">05分</option>
+                <option value="10">10分</option>
+                <option value="15">15分</option>
+                <option value="20">20分</option>
+                <option value="25">25分</option>
+                <option value="30">30分</option>
+                <option value="35">35分</option>
+                <option value="40">40分</option>
+                <option value="45">45分</option>
+                <option value="50">50分</option>
+                <option value="55">55分</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 目標までの超過時間（何時間・何分プルダウン） -->
+    <div class="form-group">
+        <label>目標までの超過時間</label>
+        <div class="hint">例：14:30定時から15:00目標なら「0時間」「30分」</div>
+        <div class="time-inputs">
+            <select id="after_hour">
+                <option value="0" selected>0時間</option>
+                <option value="1">1時間</option>
+                <option value="2">2時間</option>
+                <option value="3">3時間</option>
+            </select>
+            <select id="after_min">
+                <option value="0">00分</option>
+                <option value="5">05分</option>
+                <option value="10">10分</option>
+                <option value="15">15分</option>
+                <option value="20">20分</option>
+                <option value="25">25分</option>
+                <option value="30" selected>30分</option>
+                <option value="35">35分</option>
+                <option value="40">40分</option>
+                <option value="45">45分</option>
+                <option value="50">50分</option>
+                <option value="55">55分</option>
+            </select>
+        </div>
+    </div>
+
+    <button onclick="calculateAndSwitch()">計算する</button>
 </div>
 
-<!-- LINE LIFF SDK -->
-<script src="https://static.line-scdn.net/liff/v2/2/sdk.js"></script>
+
+<!-- ================= 画面2：結果表示画面 ================= -->
+<div id="screen-result" class="screen">
+    <h2>【計算結果】</h2>
+    
+    <div class="result-card">
+        <div class="result-title">📌 必要な総残業時間（延べ）</div>
+        <div><span id="res_total_ot" class="result-value">--</span> 時間</div>
+    </div>
+
+    <div class="result-card" style="background: #e3f2fd; border-color: #bbdefb;">
+        <div class="result-title" style="color: #1565c0;">👤 ①グループ 1人あたりの残業</div>
+        <div><span id="res_per_person" class="result-value" style="color: #0277bd;">--</span> 分</div>
+    </div>
+
+    <div class="advice-box" id="res_advice">
+        <!-- 判定メッセージ -->
+    </div>
+
+    <button class="secondary-btn" onclick="backToInput()">← 入力画面に戻る・修正する</button>
+</div>
+
 <script>
-    window.onload = function() {
-        // liff.init({ liffId: "2012730394-14tMK6eu" }).catch((err) => { console.log(err); });
+    function getCurrentMinutesFromAmPm() {
+        const ampm = document.getElementById('ampm').value;
+        let hour = parseInt(document.getElementById('now_hour').value, 10) || 12;
+        const minute = parseInt(document.getElementById('now_min').value, 10) || 0;
+
+        if (ampm === 'AM') {
+            if (hour === 12) hour = 0;
+        } else {
+            if (hour !== 12) hour += 12;
+        }
+
+        return hour * 60 + minute;
     }
 
     function toggleMode() {
         const mode = document.getElementById('mode').value;
         const totalLabel = document.getElementById('total-label');
         const speedGroup = document.getElementById('speed-group');
-        
+
         if (mode === 'route') {
             totalLabel.innerText = "残りの総ルート数";
             speedGroup.innerHTML = `
-                <label>1ルートあたりの所要時間</label>
+                <label id="speed-label">1ルートあたりの所要時間</label>
                 <div class="hint">例：5分15秒なら「5分」と「15秒」を選択します</div>
                 <div class="time-inputs">
                     <select id="speed_min">
@@ -240,7 +213,7 @@
         } else {
             totalLabel.innerText = "残りの総物量 (個)";
             speedGroup.innerHTML = `
-                <label>平均PPH (1人1時間の処理数)</label>
+                <label id="speed-label">平均PPH (1人1時間の処理数)</label>
                 <div class="hint">※1時間あたりの処理個数を入力してください</div>
                 <input type="number" id="speed_pph" value="400">
             `;
@@ -253,24 +226,30 @@
         const totalWork = parseFloat(document.getElementById('total_work').value) || 0;
         const g1 = parseFloat(document.getElementById('g1_count').value) || 0;
         const g2 = parseFloat(document.getElementById('g2_count').value) || 0;
-        const tBefore = parseFloat(document.getElementById('time_before').value) || 0;
-        const tAfter = parseFloat(document.getElementById('time_after').value) || 0;
+
+        // 何時間・何分プルダウンから時間（h）へ変換
+        const beforeHour = parseFloat(document.getElementById('before_hour').value) || 0;
+        const beforeMin = parseFloat(document.getElementById('before_min').value) || 0;
+        const tBefore = beforeHour + (beforeMin / 60);
+
+        const afterHour = parseFloat(document.getElementById('after_hour').value) || 0;
+        const afterMin = parseFloat(document.getElementById('after_min').value) || 0;
+        const tAfter = afterHour + (afterMin / 60);
 
         let totalOtHours = 0;
         let perPersonMin = 0;
 
         if (mode === 'route') {
-            // 分と秒を合算して小数に変換 (例: 5分 + 15秒(0.25) = 5.25分)
             const m = parseFloat(document.getElementById('speed_min').value) || 0;
             const s = parseFloat(document.getElementById('speed_sec').value) || 0;
-            const speedMinutes = m + (s / 60); // 15秒なら 15/60 = 0.25
+            const speedMinutes = m + (s / 60);
 
             const routesPerHr = 60 / speedMinutes;
             const proc1430 = (g1 + g2) * routesPerHr * tBefore;
             const rem1430 = totalWork - proc1430;
             const procG2 = g2 * routesPerHr * tAfter;
             const remOtRoutes = Math.max(0, rem1430 - procG2);
-            
+
             const totalOtMin = remOtRoutes * speedMinutes;
             totalOtHours = totalOtMin / 60;
             if (g1 > 0) {
@@ -282,7 +261,7 @@
             const rem1430 = totalWork - proc1430;
             const procG2 = g2 * pph * tAfter;
             const remForOt = Math.max(0, rem1430 - procG2);
-            
+
             totalOtHours = remForOt / pph;
             if (g1 > 0) {
                 perPersonMin = (totalOtHours / g1) * 60;
@@ -313,6 +292,3 @@
         window.scrollTo(0, 0);
     }
 </script>
-
-</body>
-</html>
